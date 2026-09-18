@@ -51,18 +51,18 @@ run;
 data vs_raw;
     set dm_raw;
     length visit $8;
-	/*¹Ì¶¨Ëæ»úÖÖ×Ó£¬±£Ö¤Ã¿´ÎÔËĞĞ ½á¹ûÒ»ÖÂ*/
+	/*å›ºå®šéšæœºç§å­ï¼Œä¿è¯æ¯æ¬¡è¿è¡Œ ç»“æœä¸€è‡´*/
     if _n_ = 1 then call streaminit(2027);
-	/*ÎªÃ¿Î» ÊÜÊÔÕßÉú³ÉÒ»´Î»ùÏßÑª Ñ¹*/
+	/*ä¸ºæ¯ä½ å—è¯•è€…ç”Ÿæˆä¸€æ¬¡åŸºçº¿è¡€ å‹*/
     base_sbp = round(rand('normal',155,10));
     base_dbp = round(rand('normal',95,6));
-	/*Ã¿Î» ÊÜÊÔÕßÉú³É4´ÎËæ·Ã*/
+	/*æ¯ä½ å—è¯•è€…ç”Ÿæˆ4æ¬¡éšè®¿*/
     do visitnum = 0,4,8,12;
         if visitnum = 0 then visit = 'Baseline';
         else if visitnum = 4 then visit = 'Week 4';
         else if visitnum = 8 then visit = 'Week 8';
         else if visitnum = 12 then visit = 'Week 12';
-        /*ÉèÖÃ ²»Í¬ÖÎ×éµÄ Æ½¾ùÖÎÁÆĞ§  Ó¦*/
+        /*è®¾ç½® ä¸åŒæ²»ç»„çš„ å¹³å‡æ²»ç–—æ•ˆ  åº”*/
         if visitnum = 0 then do;
             effect_sbp = 0;
             effect_dbp = 0;
@@ -96,25 +96,25 @@ data vs_raw;
                 effect_dbp = -2;
             end;
         end;
-		/*baselineÉú³ÉÊµ¼Ê¹Û²ìµ½  µÄ Ñª Ñ¹*/
+		/*baselineç”Ÿæˆå®é™…è§‚å¯Ÿåˆ°  çš„ è¡€ å‹*/
         if visitnum = 0 then do;
             sbp = base_sbp;
             dbp = base_dbp;
         end;
-		/*ÖÎÁÆºó¼ÓÈë¸öÌå²¨¶¯Öµ*/
+		/*æ²»ç–—ååŠ å…¥ä¸ªä½“æ³¢åŠ¨å€¼*/
         else do;
             error_sbp = rand('normal',0,4);
             error_dbp = rand('normal',0,3);
             sbp = round(base_sbp + effect_sbp + error_sbp);
             dbp = round(base_dbp+ effect_dbp+ error_dbp);
         end;
-		/*´´ ½¨Ëæ·ÃÈÕ ÆÚ*/
+		/*åˆ› å»ºéšè®¿æ—¥ æœŸ*/
         visitdt = randdt + visitnum*7;
         format visitdt date9.;
-		/*Ã¿´ÎÑ­»·Êä³ö Ò»Ìõ¼ÇÂ¼*/
+		/*æ¯æ¬¡å¾ªç¯è¾“å‡º ä¸€æ¡è®°å½•*/
         output;
     end;
-	/*É¾ ³ıÄ£Äâ¹ı³ÌÖĞÊ¹ÓÃµÄ ¸¨Öú±äÁ¿*/
+	/*åˆ  é™¤æ¨¡æ‹Ÿè¿‡ç¨‹ä¸­ä½¿ç”¨çš„ è¾…åŠ©å˜é‡*/
     drop base_sbp
          base_dbp
          effect_sbp
@@ -224,10 +224,10 @@ data ae_raw;
         else n_ae = 2;
     end;
     /*------------------------------------------
-      2. ¶ÔÓĞAEdµÄ ÊÜÊÔÕßÖğÌõÉú³É
+      2. å¯¹æœ‰AEdçš„ å—è¯•è€…é€æ¡ç”Ÿæˆ
     ------------------------------------------*/
     do aeseq =  1 to n_ae;
-        /* AEÃû³Æ */
+        /* AEåç§° */
         term_rand =
             1 + floor(rand('uniform') * 5);
         if term_rand = 1 then
@@ -241,7 +241,7 @@ data ae_raw;
         else if term_rand = 5 then
             aeterm = 'Cough';
         /*--------------------------------------
-          3. ÑÏÖØ³Ì¶È
+          3. ä¸¥é‡ç¨‹åº¦
         --------------------------------------*/
         sev_rand = rand('uniform');
         if sev_rand < 0.70 then
@@ -251,10 +251,10 @@ data ae_raw;
         else
             severity = 'SEVERE';
         /*--------------------------------------
-          4. AE¿ªÊ¼ÈÕ ÆÚËæ»ú»¯ºó0~83ÌìÖ®¼ä
+          4. AEå¼€å§‹æ—¥ æœŸéšæœºåŒ–å0~83å¤©ä¹‹é—´
         --------------------------------------*/
         aestdt = randdt + floor(rand('uniform') * 84);
-        /* AE³ÖĞø1~10Ìì */
+        /* AEæŒç»­1~10å¤© */
         duration =1 + floor(rand('uniform') * 10);
         aeendt =aestdt + duration;
         format aestdt aeendt date9.;
@@ -281,7 +281,7 @@ run;
 proc freq data=ae_raw;
     tables arm;
 run;
-/*Í³¼ÆÖÁÉÙ·¢Éú1¸ö AE µÄ ÊÜÊÔÕß*/
+/*ç»Ÿè®¡è‡³å°‘å‘ç”Ÿ1ä¸ª AE çš„ å—è¯•è€…*/
 proc sort data=ae_raw
           out=ae_subject
           nodupkey;
@@ -341,19 +341,19 @@ run;
 
 
 proc export data=dm_raw
-    outfile='D:\SAS_Project01\data\dm_raw.xlsx'
-    dbms=xlsx
+    outfile='D:\SAS_Project01\data\dm_raw.csv'
+    dbms=csv
     replace;
 run;
 
 proc export data=vs_raw
-    outfile='D:\SAS_Project01\data\vs_raw.xlsx'
-    dbms=xlsx
+    outfile='D:\SAS_Project01\data\vs_raw.csv'
+    dbms=csv
     replace;
 run;
 
 proc export data=ae_raw
-    outfile='D:\SAS_Project01\data\ae_raw.xlsx'
-    dbms=xlsx
+    outfile='D:\SAS_Project01\data\ae_raw.csv'
+    dbms=csv
     replace;
 run;
